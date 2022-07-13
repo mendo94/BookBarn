@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import BookList from "./components/BookList";
+import BookSave from "./components/BookSave";
 
 class App extends Component {
   constructor() {
@@ -8,6 +9,7 @@ class App extends Component {
       books: [],
     };
   }
+
   componentDidMount() {
     this.fetchAllBooks();
   }
@@ -23,7 +25,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <BookList />
+        <BookList books={this.state.books} />
+        <BookSave onAdd={this.handleSaveBook} />
       </div>
     );
   }
