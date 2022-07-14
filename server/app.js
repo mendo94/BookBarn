@@ -10,7 +10,6 @@ const SALT_ROUNDS = 10;
 
 app.use(cors());
 app.use(express.json());
-// app.use(express.urlencoded());
 
 app.post("/registration", async (req, res) => {
   const { username, password } = req.body;
@@ -26,7 +25,7 @@ app.post("/registration", async (req, res) => {
       username: username,
       password: hash,
     });
-    const savedUser = await user.save();
+    const _ = await user.save();
     res.json({ success: true });
   }
 });
@@ -66,7 +65,7 @@ app.post("/", async (req, res) => {
     year: year,
     imageURL: imageURL,
   });
-  const savedBook = await addBooks.save();
+  const _ = await addBooks.save();
   res.json({ success: true });
 });
 
