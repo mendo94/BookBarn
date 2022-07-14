@@ -9,12 +9,37 @@ app.use(cors());
 
 app.use(express.json());
 
-// app.get('/', async (req, res) => {
-//     const
+// app.post("/", async (req, res) => {
+//   const { title, genre, publisher, year, imageURL } = req.body;
 
-//     const books = await models.Book.findAll()
+//   const books = await models.Book.build({
+//     title: title,
+//     genre: genre,
+//     publisher: publisher,
+//     year: year,
+//     imageURL: imageURL,
+//   });
+//   const persistedBooks = await books.save();
+//   if (persistedBooks != null) {
+//     res.json({ success: true });
+//   }
+// });
 
-// })
+app.post("/", (req, res) => {
+  const { title, genre, publisher, year, imageURL } = req.body;
+
+  const addBooks = models.Book.build({
+    title: title,
+    genre: genre,
+    publisher: publisher,
+    year: year,
+    imageURL: imageURL,
+  });
+  addBooks.save().then((BookSave) => {
+    res.json({ success: true });
+  });
+});
+
 app.get("/", async (req, res) => {
   const books = await models.Book.findAll();
   res.json(books);
