@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import BookList from "./components/BookList";
 import BookSave from "./components/BookSave";
+import Menu from "./components/Menu";
 
 class App extends Component {
   constructor() {
@@ -26,7 +27,6 @@ class App extends Component {
     return (
       <div>
         <BookList books={this.state.books} />
-        <BookSave onAdd={this.handleSaveBook} />
       </div>
     );
   }
