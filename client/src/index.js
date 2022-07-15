@@ -8,6 +8,7 @@ import BookSave from "./components/BookSave";
 import BaseLayout from "./components/BaseLayout";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

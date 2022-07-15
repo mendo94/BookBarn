@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
   const [user, setUser] = useState({});
-  let navigate = useNavigate();
+  let Navigate = useNavigate();
 
   const handleTextChange = (e) => {
     setUser({
@@ -23,7 +23,7 @@ function SignIn() {
       .then((response) => response.json())
       .then((result) => {
         if (result.success) {
-          navigate("/");
+          Navigate("/");
         }
       });
   };
