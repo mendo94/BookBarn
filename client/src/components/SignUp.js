@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import "./SignIn.css";
 
 function SignUp() {
   const [user, setUser] = useState({});
@@ -33,8 +34,10 @@ function SignUp() {
       <h1>Register for an Account</h1>
       <label htmlFor="username">Create username</label>
       <input type="text" name="username" onChange={handleTextChange} />
+      <br />
       <label htmlFor="password">Create password</label>
       <input type="password" name="password" onChange={handleTextChange} />
+      <br></br>
       <button onClick={handleSaveUser}>Register</button>
     </div>
   );

@@ -1,81 +1,124 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function BookSave() {
-  const [book, setBook] = useState({});
-  let navigate = useNavigate();
+  const [book, setBook] = useState("");
+  const [result, setResult] = useState([]);
+  const [apiKey, setApiKey] = useState(
+    "AIzaSyDWZchMfcTgZ6tz4opBD6_myPdDvStJegg"
+  );
+  const [favorite, setFavorite] = useState([]);
+  const userId = localStorage.getItem("userId");
+  const Navigate = useNavigate();
 
   const handleTextChange = (e) => {
     setBook({
       ...book,
       [e.target.name]: e.target.value,
+      userId: userId,
     });
   };
-  const handleSaveBook = () => {
-    fetch("http://localhost:8080/", {
+  const handleFavorites = (e) => {
+    setFavorite({
+      ...favorite,
+      title: e.target.id,
+      publisher: e.target.lang,
+      genre: e.target.title,
+      imageURL: e.target.name,
+      userId: userId,
+    });
+  };
+
+  const handleSaveBook = async () => {
+    const addBooks = await fetch(`http://localhost:8080/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(book),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.success) {
-          navigate("/");
-        }
+      body: JSON.stringify(favorite),
+    });
+    const response = await addBooks.json();
+    if (response.success) {
+      Navigate("/");
+    }
+  };
+
+  const handleChange = (e) => {
+    const book = e.target.value;
+    setBook(book);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(book);
+    axios
+      .get(
+        `https://www.googleapis.com/books/v1/volumes?q=${book}&key=${apiKey}&maxResults=10`
+      )
+      .then((data) => {
+        console.log(data.data.items);
+        setResult(data.data.items);
       });
   };
 
-  // const handleSaveBook = async () => {
-  //   const settings = {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(book),
-  //   };
-  //   try {
-  //     const response = await fetch("http://localhost:8080/", settings);
-  //     const books = await response.json();
-  //     if (books.success) {
-  //       this.props.onSave();
-  //       // navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  //   handleSaveBook = () => {
-  //     fetch("http://localhost:8080/", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(this.state),
-  //     })
-  //       .then((response) => response.json())
-  //       .then((result) => {
-  //         if (result.success) {
-  //           this.props.onSave();
-  //         }
-  //       });
-  //   };
-
   return (
-    <div>
-      <label htmlFor="title">Title of Book:</label>
-      <input type="text" name="title" onChange={handleTextChange} />
-      <label htmlFor="genre">Book Genre</label>
-      <input type="text" name="genre" onChange={handleTextChange} />
-      <label htmlFor="publisher">Publisher</label>
-      <input type="text" name="publisher" onChange={handleTextChange} />
-      <label htmlFor="year">Year</label>
-      <input type="text" name="year" onChange={handleTextChange} />
-      <label htmlFor="imageURL">Add image</label>
-      <input type="text" name="imageURL" onChange={handleTextChange} />
-      <button onClick={handleSaveBook}>Add Book</button>
+    <div
+      className="list-group"
+      style={{
+        marginTop: "2em",
+      }}
+    >
+      <div className="input-group-append">
+        <button className="btn btn-success" onClick={handleSaveBook}>
+          Add Book
+        </button>
+      </div>
+      <h1>Explore New Titles</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <input type="text" onChange={handleChange} autoComplete="off" />
+        </div>
+        <button type="submit">Search</button>
+      </form>
+      <section style={{ display: "flex", flexWrap: "wrap" }}>
+        {result.map((book) => (
+          <div
+            key={book.id}
+            className="card bg-dark"
+            style={{
+              maxWidth: "16em",
+              minWidth: "16em",
+              padding: "2em",
+              margin: "2em",
+              backgroundColor: "none",
+            }}
+          >
+            <div className="card-body">
+              <p className="card-text">{book.volumeInfo.title}</p>
+            </div>
+            <img
+              src={book.volumeInfo.imageLinks.thumbnail}
+              alt="Card image"
+              style={{ borderRadius: "3%", maxHeight: "18em" }}
+            />
+            <div className="card-body">
+              <a href={book.volumeInfo.previewLink}>Read Preview</a>
+              <div>
+                <input
+                  id={book.volumeInfo.title}
+                  lang={book.volumeInfo.authors}
+                  name={book.volumeInfo.imageLinks.thumbnail}
+                  title={book.volumeInfo.categories}
+                  onChange={handleFavorites}
+                  type="checkbox"
+                />
+                <label htmlFor="">Add to Favorites</label>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }

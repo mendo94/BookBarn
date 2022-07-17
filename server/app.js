@@ -45,7 +45,7 @@ app.post("/login", async (req, res) => {
   });
   if (user != null) {
     bcrypt.compare(password, user.password, (result) => {
-      res.json({ success: true });
+      res.json({ success: true, userId: user.id });
     });
   }
 });
@@ -56,22 +56,40 @@ app.get("/login", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-  const { title, genre, publisher, year, imageURL } = req.body;
+  const { title, genre, publisher, year, imageURL, userId } = req.body;
 
-  const addBooks = models.Book.build({
+  const addBooks = await models.Book.build({
     title: title,
     genre: genre,
     publisher: publisher,
     year: year,
     imageURL: imageURL,
+    userId: userId,
   });
   const _ = await addBooks.save();
   res.json({ success: true });
 });
 
-app.get("/", async (req, res) => {
-  const books = await models.Book.findAll();
+app.get("/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  console.log(userId);
+  const books = await models.Book.findAll({
+    where: {
+      userId: userId,
+    },
+  });
   res.json(books);
+});
+
+app.delete("/:bookId", async (req, res) => {
+  const bookId = parseInt(req.params.bookId);
+
+  const _ = models.Book.destroy({
+    where: {
+      id: bookId,
+    },
+  });
+  res.json({ success: true });
 });
 
 app.listen(PORT, () => {

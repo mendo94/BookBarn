@@ -1,46 +1,56 @@
-import React, { useState, useEffect } from "react";
-import SignUp from "./components/SignUp";
-import BookList from "./components/BookList";
-import BookSave from "./components/BookSave";
-import Menu from "./components/Menu";
+import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 function App() {
-  // const [users, setUsers] = useState([])
-  const [books, setBooks] = useState([]);
-  const [users, setUsers] = useState([]);
-
+  const [searchBooks, setSearchBooks] = useState([]);
+  const searchInput = "";
   useEffect(() => {
-    getUser();
-    getAllBooks();
+    searchAllBooks();
   }, []);
 
-  // fetchAllBooks = async () => {
-  //   const response = await fetch("http://localhost:8080/");
-  //   const books = await response.json();
-  //   this.setState({
-  //     books: books,
+  // const handleSearch = (e) => {
+  //   setSearchBooks({
+  //     searchInput: e.target.value,
   //   });
   // };
-  const getUser = () => {
-    fetch("http://localhost:8080/registration")
+
+  const searchAllBooks = () => {
+    fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=flowers&key=AIzaSyDWZchMfcTgZ6tz4opBD6_myPdDvStJegg`
+    )
       .then((response) => response.json())
-      .then((users) => {
-        setUsers(users);
+      .then((searchBooks) => {
+        setSearchBooks(searchBooks);
       });
   };
 
-  const getAllBooks = () => {
-    // get all the books
-    fetch("http://localhost:8080/")
-      .then((response) => response.json())
-      .then((books) => {
-        setBooks(books);
-      });
-  };
+  // console.log(searchBooks.items[0].volumeInfo);
+
+  // const searchResults = searchBooks.items.volumeInfo;
+  // console.log(searchBooks);
+
+  // const result = []
+  // for (let i = 0; i < 10; i++) {
+  //   searchResults.push(<Print value={i} key={i} />)
+  // }
+
+  // const bookResults = searchResults.map((search) => {
+  //   return (
+  //     <div>
+  //       <li>{search.title}</li>
+  //     </div>
+  //   );
+  // });
 
   return (
     <div>
-      <BookList books={books} />
+      <input type="text" name="searchInput" />
+
+      {/* <ul className="text-white">{searchResults.title}</ul>
+      <ul className="text-white">{searchResults.authors}</ul>
+      <ul className="text-white">{searchResults.publishedDate}</ul>
+      <ul className="text-white">{searchResults.description}</ul>
+      <img src={searchResults.imageLinks.thumbnail} alt="" /> */}
     </div>
   );
 }
