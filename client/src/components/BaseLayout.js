@@ -1,18 +1,32 @@
-import React, { Component } from "react";
-import Menu from "./Menu";
-import App from "../App";
-import BookSave from "./BookSave";
+import { NavLink } from "react-router-dom";
 
-class BaseLayout extends Component {
-  render() {
-    return (
-      <div>
-        <Menu />
-        {this.props.children}
-        <p>Copyright 2022</p>
-      </div>
-    );
-  }
+function Menu() {
+  const newLocal = "background-color: #e3f2fd;";
+  return (
+    <div>
+      <nav
+        className="navbar navbar-light"
+        style={{ backgroundColor: "#e3f2fd" }}
+      >
+        <div>
+          <NavLink className="text-dark" to="/">
+            Home
+          </NavLink>
+        </div>
+        <div>
+          <NavLink to="/add-book">Add Book</NavLink>
+        </div>
+      </nav>
+    </div>
+  );
 }
 
+function BaseLayout(props) {
+  return (
+    <div>
+      <Menu />
+      {props.children}
+    </div>
+  );
+}
 export default BaseLayout;
